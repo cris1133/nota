@@ -63,13 +63,15 @@ def breakDown(expression):
 # Extra spaces are cleaned out
 # Variables are plugged in
 def parseExpression(expression):
+	if expression.startswith(" "):
+		expression = expression[1:]
 	if expression[0] != '(':
 		return "Error: Malformed Expression"
 	if expression[-1] != ')':
 		return "Error: Malformed Expression"
 	if len(expression) < 5:
 		return "Error: Malformed Expression"
-	# Strip out the parens
+	# Strip out the parens and extra space in front
 	expression = expression.replace('(', "")
 	expression = expression.replace(')', "")
 	# Convert the string to a list
@@ -97,15 +99,22 @@ def parseExpression(expression):
 ## Variables: Splits via a colon
 def classify(string):
 	string_ = string.replace('\t', '')
-	string_ = string.replace(' ', '')
+	string_ = string_.replace(' ', '')
 	if string_.startswith('(') and string_.endswith(')'):
 		return [1, parseExpression(string.replace('\t', ''))]
 	elif ':' in string:
 		string_ = string_.split(':')
-		variables[string_[0]] = string_[1]
-		return [2, 2]
+		# These two are for checking if it's an expression on the right
+		string = string.replace('\t', '')
+		string = string.split(':')
+		# Check if the assigment is an expression
+		if classify(string[1])[0] == 1:
+			variables[string_[0]] = parseExpression(string[1])
+		else:
+			variables[string_[0]] = string_[1]
+		return [2, "Variable Assigment"]
 	else:
-		return [0, 0]
+		return [0, "Error"]
 			
 
 	

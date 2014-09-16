@@ -94,9 +94,10 @@ def main(stdscr):
 		for string in range(len(buf[0][0])):
 			if string < (y-2):
 
+
 				## Math
-				if classify(buf[0][0][(string-1) + offset])[0] == 1:
-					myscreen.addstr(string, 0, classify(buf[0][0][(string-1) + offset])[1], curses.color_pair(2) | curses.A_BOLD)
+				if classify(buf[0][0][string + offset][(offsetX):((x-1) + offsetX)])[0] == 1:
+					myscreen.addstr(string, 0, ('\t'*(tabOffset/7))+classify(buf[0][0][string + offset][(0+offsetX):((x-1) + offsetX)])[1], curses.color_pair(2) | curses.A_BOLD)
 					continue
 
 				## H3
