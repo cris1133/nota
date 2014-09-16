@@ -7,7 +7,9 @@
 def initalize():
 	operations = ['+','-','*','^','/']
 	variables = {}
-initalize
+	global operations
+	global variables
+initalize()
 
 # The most basic expressions are executed here after being parsed
 def expressionSimple(expression):
@@ -65,6 +67,8 @@ def parseExpression(expression):
 		return "Error: Malformed Expression"
 	if expression[-1] != ')':
 		return "Error: Malformed Expression"
+	if len(expression) < 5:
+		return "Error: Malformed Expression"
 	# Strip out the parens
 	expression = expression.replace('(', "")
 	expression = expression.replace(')', "")
@@ -90,6 +94,19 @@ def parseExpression(expression):
 
 ## This function classifies expressions and variable assignments
 ## It also requires that a number is supplied in the field
+## Variables: Splits via a colon
 def classify(string):
-	pass
+	string_ = string.replace('\t', '')
+	string_ = string.replace(' ', '')
+	if string_.startswith('(') and string_.endswith(')'):
+		return [1, parseExpression(string.replace('\t', ''))]
+	elif ':' in string:
+		string_ = string_.split(':')
+		variables[string_[0]] = string_[1]
+		return [2, 2]
+	else:
+		return [0, 0]
+			
+
+	
 

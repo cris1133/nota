@@ -10,7 +10,7 @@ import random
 from pyfiglet import figlet_format
 from itertools import chain, repeat, islice
 import os.path
-import * from exparser
+from exparser import *
 
 ## Workings
 ## buf holds a list of "blocks"
@@ -45,6 +45,7 @@ def main(stdscr):
 	prev_y = 0
 	curses.mousemask(1)
 	curses.raw()
+	initalize()
 
 	def saveFile(name):
 		if os.path.isfile(name):
@@ -94,7 +95,10 @@ def main(stdscr):
 			if string < (y-2):
 
 				## Math
-				
+				if classify(buf[0][0][(string-1) + offset])[0] == 1:
+					myscreen.addstr(string, 0, classify(buf[0][0][(string-1) + offset])[1], curses.color_pair(2) | curses.A_BOLD)
+					continue
+
 				## H3
 				if string > 2:
 					if string < len(buf[0][0]) and buf[0][0][(string-1) + offset].startswith("\t") and buf[0][0][(string) + offset].startswith("\t"*2) and buf[0][0][(string+1) + offset].startswith("\t"*3):
