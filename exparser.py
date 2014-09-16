@@ -1,4 +1,5 @@
 #! /home/cristopher/Enthought/Canopy_64bit/User/bin/python
+from decimal import *
 
 ## This executes simple "list" expressions
 ## These need to be pre-parsed into lists
@@ -17,15 +18,15 @@ def expressionSimple(expression):
 	n1 = expression[1]
 	n2 = expression[2]
 	if operation == '+':
-		return str(int(n1) + int(n2))	
+		return str(Decimal(n1) + Decimal(n2))	
 	elif operation == '-':
-		return str(int(n1) - int(n2))
+		return str(Decimal(n1) - Decimal(n2))
 	elif operation == '*':
-		return str(int(n1) * int(n2))
+		return str(Decimal(n1) * Decimal(n2))
 	elif operation == '^':
-		return str(int(n1) ** int(n2))
+		return str(Decimal(n1) ** Decimal(n2))
 	elif operation == '/':
-		return str(int(n1) / int(n2))
+		return str(Decimal(n1) / Decimal(n2))
 
 # Workings
 # First every operation is pushed onto the stack
@@ -36,7 +37,10 @@ def expressionSimple(expression):
 def breakDown(expression):
 	operationStack = []
 	if not expression[0] in operations:
-		return "Error: Invalid Operation"
+		if not expression[0].isdigit():
+			return "Error: Invalid Operation"
+		else:
+			return expression[0]
 	if len(expression) == 3:
 		return expressionSimple(expression)
 	if len(expression) >= 5:
@@ -83,12 +87,14 @@ def parseExpression(expression):
 			expressionClean.append(expression[symbol])
 	# Plug in variables
 	for symbol in range(len(expressionClean)):
-		if expressionClean[symbol].isdigit() or expressionClean[symbol] in operations:
+		if expressionClean[symbol].replace('.', '').isdigit() or expressionClean[symbol] in operations:
 			continue
 		elif expressionClean[symbol] in variables.keys():
-			expressionClean[symbol] = variables[expressionClean[symbol]]
+			if expressionClean[symbol] != None:
+				expressionClean[symbol] = variables[expressionClean[symbol]]
 		else:
-			expressionClean[symbol] = 0
+			expressionClean[symbol] = "0"
+
 	# Break it down 
 	return breakDown(expressionClean)
 
