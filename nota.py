@@ -10,6 +10,7 @@ import random
 from pyfiglet import figlet_format
 from itertools import chain, repeat, islice
 import os.path
+import * from exparser
 
 ## Workings
 ## buf holds a list of "blocks"
@@ -87,19 +88,13 @@ def main(stdscr):
 				myscreen.addstr(y-1, 0, "Open File - C^s", curses.color_pair(4))
 				myscreen.addstr(y-1, 16, save_name, curses.color_pair(4))			
 
-		## Indicators
-		if cursor.y < 1:
-			myscreen.addstr(0, 0, " "*(x), curses.color_pair(5))
-			curses.curs_set(0)
-		else:
-			myscreen.addstr(0, 0, " "*(x), curses.color_pair(1))
-			curses.curs_set(1)
-
 		## The actual text
 		## Loop goes here
 		for string in range(len(buf[0][0])):
 			if string < (y-2):
 
+				## Math
+				
 				## H3
 				if string > 2:
 					if string < len(buf[0][0]) and buf[0][0][(string-1) + offset].startswith("\t") and buf[0][0][(string) + offset].startswith("\t"*2) and buf[0][0][(string+1) + offset].startswith("\t"*3):
@@ -215,9 +210,11 @@ def main(stdscr):
 			if mode == 0:
 				if cursor.y == (y-3):
 					offset = offset + 1
-				elif cursor.x < len(buf[0][0][cursor.y + offset].replace('\t', "        ")) - 1:
+					cursor.x = min(len(buf[0][0][cursor.y + offset].replace('\t', "        ")), x-1)
+				elif cursor.x < min(len(buf[0][0][cursor.y + offset].replace('\t', "        ")), x-1):
 					buf[0][0].insert((cursor.y + offset), "")
 					cursor.y = cursor.y + 1
+					cursor.x = min(len(buf[0][0][cursor.y + offset].replace('\t', "        ")), x-1)
 				else:
 					cursor.y = cursor.y + 1
 					if buf[0][0][cursor.y-1] == "":
